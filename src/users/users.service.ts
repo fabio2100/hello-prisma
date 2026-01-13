@@ -1,6 +1,7 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { Prisma } from 'generated/prisma/browser';
 import { PrismaServiceService } from '../prisma-service/prisma-service.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -10,7 +11,7 @@ export class UsersService {
     try {
       return await this.prisma.users.create({ data: usersCreateInput });
     } catch (error) {
-      if (error.code === 'P2002') {
+      if (error.code === 'P2002') { 
         throw new ConflictException('User with this email or idNumber already exists');
       }
       throw error;
@@ -21,15 +22,33 @@ export class UsersService {
     return this.prisma.users.findMany();
   }
 
-  /*findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: number) {
+    return this.prisma.users.findUnique({ where: { id } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+    return await this.prisma.users.update({
+      where: { id },
+      data: updateUserDto,
+    });
+    } catch (error) {
+      if (error.code === 'P2002') { 
+        throw new ConflictException('User with this email or idNumber already exists');
+      }
+      throw error;
+    }
+    
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }*/
+  async remove(id: number) {
+    try {
+      return await this.prisma.users.delete({ where: { id } });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new ConflictException('User not found');
+      } 
+      throw error;
+    }
+  }
 }

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UsersService } from './users.service';
 import { users } from 'generated/prisma/browser';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 
 @Controller('users')
@@ -18,7 +19,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  /*@Get(':id')
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
@@ -31,5 +32,5 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
-  }*/
+  }
 }
